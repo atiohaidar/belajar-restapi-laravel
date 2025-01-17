@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 use Str;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UserController extends Controller
 {
@@ -39,7 +43,7 @@ class UserController extends Controller
         }
         return true;
     }
-    public function register(UserRegisterRequest $request)
+    public function register(UserRegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
         $this->userMustNotExist($data["username"]);
@@ -56,6 +60,28 @@ class UserController extends Controller
         $user->token = Str::uuid()->toString();
         $user->save();
         return new UserResource($user);
+    }
+    public function getUser(Request $request): UserResource{
+        $user = Auth::user();
+        return new UserResource($user);
+    }
+    public function update(UserUpdateRequest $request){
+        $user = Auth::user();
+        $data = $request->validated();
+        if (isset($data["name"])){
+            $user->name = $data["name"];
+        }
+        if (isset($data["password"])){
+            $user->password = Hash::make($data["password"]);
+        }
+        $user->save();
+        return (new UserResource($user));
+    }
+    public function logout(Request $request): JsonResponse{
+        $user = Auth::user();
+        $user->token = null; //lebih ke nge hapus token nya aja
+        $user->save();
+        return response()->json(["data"=>true],200);
     }
 
 }

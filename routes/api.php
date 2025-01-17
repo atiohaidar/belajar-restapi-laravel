@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post("/register", [UserController::class,"register"])->name("user.register");
 Route::post("/login", [UserController::class,"login"])->name("user.login");
+Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function () {
+    Route::get("/users/current", [UserController::class,"getUser"]);
+    Route::patch("/users/current", [UserController::class,"update"])->name("user.update");
+    Route::delete("/users/logout", [UserController::class,"logout"]);
+});
