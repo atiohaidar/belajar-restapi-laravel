@@ -1,6 +1,6 @@
 # Rencana
-- buat migration
-- buat model
+- buat migration [v]
+- buat model []
 ## User
 - buat request user
 - buat resource user
