@@ -6,6 +6,7 @@ use App\Http\Requests\UserRegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Hash;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 
@@ -18,9 +19,9 @@ class UserController extends Controller
             //  user nya engga boleh ada sebelumnya
             throw new HttpResponseException(response([
                 "errors" => [
-                    "username" => "Username has exist"
+                    "username" => ["Username has exist"]
                 ]
-            ]));
+            ])->setStatusCode(400));
         }
         return true;
     }
@@ -33,5 +34,5 @@ class UserController extends Controller
         $user->save();
         return (new UserResource($user))->response()->setStatusCode(201);
     }
-    
+
 }

@@ -8,6 +8,10 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
+    //  biar datanya engga ngarih makanya make refresh database
+    
+    use RefreshDatabase;
+
     /**
      * A basic feature test example.
      */
@@ -37,6 +41,24 @@ class UserTest extends TestCase
             "errors" => [
                 "username" => [
                     "The username field is required."
+                ]
+            ]
+        ]);
+    }
+    public function testRegisterFailedUserHasExist()
+    {
+        $this->testRegisterSuccess();
+        $response = $this->post("/api/register", [
+            "username" => "test",
+
+            "password" => "test",
+            "name" => "test name"
+        ]);
+        $response->assertStatus(400);
+        $response->assertJson([
+            "errors" => [
+                "username" => [
+                    "Username has exist"
                 ]
             ]
         ]);
