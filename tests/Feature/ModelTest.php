@@ -62,4 +62,9 @@ class ModelTest extends TestCase
         $address = Address::with("contact.user")->get();
         print (json_encode($address, JSON_PRETTY_PRINT));
     }
+    public function testUserModelGet(): void{
+        $user = User::where("id", "is", "")->get();   
+        print (json_encode($user, JSON_PRETTY_PRINT));
+
+    }
 }
