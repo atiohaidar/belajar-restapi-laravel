@@ -9,7 +9,7 @@ use Tests\TestCase;
 class UserTest extends TestCase
 {
     //  biar datanya engga ngarih makanya make refresh database
-    
+
     use RefreshDatabase;
 
     /**
@@ -63,4 +63,38 @@ class UserTest extends TestCase
             ]
         ]);
     }
+    public function testLoginSuccess()
+    {
+        $this->testRegisterSuccess();
+
+        $response = $this->post("/api/login", [
+            "username" => "test",
+            "password" => "test",
+        ]);
+        $response->assertStatus(200);
+        $response->assertJson([
+            "data" => [
+                "username" => "test",
+                "name"=> "test name"
+            ]
+        ]);
+    }
+    public function testLoginFailWrongPassword()
+    {
+        $this->testRegisterSuccess();
+
+        $response = $this->post("/api/login", [
+            "username" => "test",
+            "password" => "test2",
+        ]); 
+        $response->assertStatus(401);
+        $response->assertJson([
+            "errors" => [
+                "message" => [
+                    "username or password wrong"
+                ]
+            ]
+        ]);
+    }
+
 }
