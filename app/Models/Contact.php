@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Contact extends Model
+class   Contact extends Model
 {
     use HasFactory;
     protected $table = "contacts";

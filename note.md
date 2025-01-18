@@ -2,11 +2,19 @@
 - buat migration [v]
 - buat model [v]
 ## User
-- buat request user
-- buat resource user
-- buat middlewarre auth
-- buat controller user
+- buat request user[v]
+- buat resource user[v]
+- buat middlewarre auth[v]
+- buat controller user[v]
+- buat routes[v]
+- buat seeder user[v]
+- setting reset database untuk testing[v]
+- buat unittest [v]
+
+## Contact
+- buat request contact
+- buat resurce contact
+- buat controller contact
+- buat resource collection untuk fitur list
 - buat routes
-- buat seeder user
-- setting reset database untuk testing
-- buat unittest 
+- buat unit test

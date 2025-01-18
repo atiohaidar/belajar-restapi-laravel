@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 class ModelTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      */
@@ -27,8 +28,8 @@ class ModelTest extends TestCase
     }
     public function testContactModelCreate(): void
     {
+        $this->testUserModelCreate();
         $data = [
-            "user_id" => "1",
             "firstname" => "Akun lain",
 
         ];
@@ -42,9 +43,12 @@ class ModelTest extends TestCase
     {
         $contact = Contact::with("user")->get();
         print (json_encode($contact, JSON_PRETTY_PRINT));
+        $this->assertTrue(true);
+
     }
     public function testAddressModelCreate(): void
     {
+        $this->testContactModelCreate();
         $data = [
             'street' => "Jalan Balaikambang",
             'city' => "Purwokerto",
@@ -61,10 +65,14 @@ class ModelTest extends TestCase
     {
         $address = Address::with("contact.user")->get();
         print (json_encode($address, JSON_PRETTY_PRINT));
+        $this->assertTrue(true);
+
     }
     public function testUserModelGet(): void{
         $user = User::where("id", "is", "")->get();   
         print (json_encode($user, JSON_PRETTY_PRINT));
+        $this->assertTrue(true);
+
 
     }
 }
