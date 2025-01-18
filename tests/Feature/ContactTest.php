@@ -101,4 +101,47 @@ class ContactTest extends TestCase
         self::assertEquals($oldContact["data"]["email"], Contact::find($oldContact["data"]["id"])->email);
 
     }
+    public function testGetContactSuccess(): void
+    {
+        $oldContact = $this->testCreateContactSuccess();
+        $response = $this->get(
+            '/api/contacts/' . $oldContact["data"]["id"]
+            ,
+            [
+                "Authorization" => "test"
+            ]
+        );
+        $response->assertStatus(status: 200);
+        $response->assertJson([
+            "data" => [
+                "id" => "1",
+                'firstname' => 'test',
+                'lastname' => 'test',
+                'email' => 'test',
+                'phone' => 'test',
+            ]
+        ]);
+        self::assertEquals( $oldContact["data"]["email"], $response->json()["data"]["email"]);
+
+    }
+    public function testGetContactNotFound(): void
+    {
+        $oldContact = $this->testCreateContactSuccess();
+        $response = $this->get(
+            '/api/contacts/' . ($oldContact["data"]["id"] + 1)
+            ,
+            [
+                "Authorization" => "test"
+            ]
+        );
+        $response->assertStatus(status: 404);
+        $response->assertJson([
+        "errors" => [
+            "message" => ["not found"]]
+        
+        ]);
+
+    }
+    
+
 }
