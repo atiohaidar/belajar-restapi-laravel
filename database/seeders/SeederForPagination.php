@@ -15,7 +15,7 @@ class SeederForPagination extends Seeder
      */
     public function run(): void
     {
-        for ($i = 20; $i < 10; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             User::create([
                 "username" => "test" . $i,
                 "password" => Hash::make("test"),
@@ -23,8 +23,13 @@ class SeederForPagination extends Seeder
                 "token" => "test" . $i
             ]);
         }
-        for ($i = 0; $i < 10; $i++) {
-            $user = User::where("id",  $i + 1)->first();
+        for ($i = 1; $i <= 22; $i++) {
+            $user = User::where("id", 1)->first();
+
+            if ($i > 15) {
+                $user = User::where("id", 2)->first();
+            }
+
             Contact::create([
                 "firstname" => "first" . $i,
                 "lastname" => "last" . $i,
@@ -33,16 +38,16 @@ class SeederForPagination extends Seeder
                 "user_id" => $user->id,
             ]);
         }
-        for ($i = 0; $i < 10; $i++) {
-            $contact = Contact::where("id",  $i + 1)->first();
+        for ($i = 1; $i <= 10; $i++) {
+            $contact = Contact::where("id", $i)->first();
             // print($contact);
             Address::create([
-                'street' => "Jalan".$i,
-                'city' => "Kota".$i,
-                'country' => "Negara".$i,
-                'province' => "Propinsi".$i,
-                'postal_code' => "123".$i,
-                'contact_id'=> $contact->id,
+                'street' => "Jalan" . $i,
+                'city' => "Kota" . $i,
+                'country' => "Negara" . $i,
+                'province' => "Propinsi" . $i,
+                'postal_code' => "123" . $i,
+                'contact_id' => $contact->id,
             ]);
         }
     }

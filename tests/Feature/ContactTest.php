@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Contact;
+use Database\Seeders\SeederForPagination;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -111,6 +112,7 @@ class ContactTest extends TestCase
                 "Authorization" => "test"
             ]
         );
+        print(json_encode($response->json(), JSON_PRETTY_PRINT));
         $response->assertStatus(status: 200);
         $response->assertJson([
             "data" => [
@@ -121,6 +123,7 @@ class ContactTest extends TestCase
                 'phone' => 'test',
             ]
         ]);
+
         self::assertEquals($oldContact["data"]["email"], $response->json()["data"]["email"]);
 
     }
@@ -191,6 +194,62 @@ class ContactTest extends TestCase
             ]);
         $response->assertStatus(401);
     }
+    public function testListContactSuccess(): void{
+
+        $this->seed(SeederForPagination::class);
+
+        $response = $this->get(
+            "/api/contacts?page=1&size=5",
+            [
+                "Authorization"=> "test1"
+            ]
+            );
+            print(json_encode($response->json(), JSON_PRETTY_PRINT));
+            self::assertEquals(15, $response->json()["meta"]["total"]);
+            $response->assertStatus(200);
+            
 
 
+        
+    }
+
+    public function testListContactSuccessQuery(): void{
+
+        $this->seed(SeederForPagination::class);
+
+        $response = $this->get(
+            "/api/contacts?name=2&email=test&phone=1",
+            [
+                "Authorization"=> "test1"
+            ]
+            );
+            print(json_encode($response->json(), JSON_PRETTY_PRINT));
+            self::assertEquals(2, $response->json()["meta"]["total"]);
+            $response->assertStatus(200);
+    }
+    public function testListContactDontHaveContact(): void{
+        $this->seed(SeederForPagination::class);
+        $response = $this->get(
+            "/api/contacts?name=2&email=3&phone=4",
+            [
+                "Authorization"=> "test1"
+            ]
+            );
+            print(json_encode($response->json(), JSON_PRETTY_PRINT));
+            self::assertEquals(0, $response->json()["meta"]["total"]);
+            $response->assertStatus(200);
+
+        }
+        public function testListContacErrorUnauthorized(): void{
+            $this->seed(SeederForPagination::class);
+            $response = $this->get(
+                "/api/contacts?name=2&email=3&phone=4",
+                [
+                    "Authorization"=> "tesx"
+                ]
+                );
+                
+                print(json_encode($response->json(), JSON_PRETTY_PRINT));
+                $response->assertStatus(401);
+            }
 }
