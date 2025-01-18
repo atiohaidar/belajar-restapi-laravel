@@ -13,6 +13,17 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+    private function checkContact(Contact $contact = null)
+    {
+        if (!isset($contact)) {
+            throw new HttpResponseException(response([
+                "errors" => [
+                    "message" => ["not found"]
+                ]
+            ])->setStatusCode(404));
+        }
+        return true;
+    }
     /**
      * digunakn untuk membuat kontak
      * @param \App\Http\Requests\ContactCreateRequest $request
@@ -39,13 +50,7 @@ class ContactController extends Controller
         $user = Auth::user();
         // karena syaratknya itu harus milik usernya, kalo engga berarti ga bisa update
         $contact = Contact::where("id", $id)->where("user_id", $user->id)->first();
-        if (!isset($contact)) {
-            throw new HttpResponseException(response([
-                "errors" => [
-                    "message" => ["not found"]
-                ]
-            ])->setStatusCode(404));
-        }
+        $this->checkContact($contact);
         $contact->fill($data);
         $contact->save();
         return new ContactResource($contact);
@@ -56,20 +61,16 @@ class ContactController extends Controller
     {
         $user = Auth::user();
         $contact = Contact::where("id", $id)->where("user_id", $user->id)->first();
-        if (!isset($contact)) {
-            throw new HttpResponseException(response([
-                "errors" => [
-                    "message" => [
-                        "not found"
-                    ]
-                ]
-            ])->setStatusCode(404));
-        }
+        $this->checkContact($contact);
         return new ContactResource($contact);
     }
     public function delete(int $id, Request $request)
     {
-
+        $user = Auth::user();
+        $contact = Contact::where("id", $id)->where("user_id", $user->id)->first(); 
+        $this->checkContact($contact);
+        $contact->delete();
+        return response()->json(["data" => true]);
     }
 
     public function list(Request $request)

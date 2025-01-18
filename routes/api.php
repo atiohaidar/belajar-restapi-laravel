@@ -26,5 +26,6 @@ Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function
         Route::post("/", [ContactController::class,"create"])->name("contact.create");
         Route::put("/{id}", [ContactController::class,"update"])->name("contact.update");
         Route::get("/{id}", [ContactController::class,"get"])->name("contact.get");
+        Route::delete("/{id}", [ContactController::class,"delete"])->name("contact.delete");
     });
 });

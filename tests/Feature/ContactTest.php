@@ -121,7 +121,7 @@ class ContactTest extends TestCase
                 'phone' => 'test',
             ]
         ]);
-        self::assertEquals( $oldContact["data"]["email"], $response->json()["data"]["email"]);
+        self::assertEquals($oldContact["data"]["email"], $response->json()["data"]["email"]);
 
     }
     public function testGetContactNotFound(): void
@@ -136,12 +136,61 @@ class ContactTest extends TestCase
         );
         $response->assertStatus(status: 404);
         $response->assertJson([
-        "errors" => [
-            "message" => ["not found"]]
-        
+            "errors" => [
+                "message" => ["not found"]
+            ]
+
         ]);
 
     }
-    
+    public function testDeleteContactSuccess(): void
+    {
+        $oldContact = $this->testCreateContactSuccess();
+        $response = $this->delete(
+            '/api/contacts/' . $oldContact["data"]["id"]
+            ,
+            []
+            ,
+            [
+                "Authorization" => "test"
+            ]
+        );
+        $response->assertStatus(status: 200);
+        $response->assertJson([
+            "data" => true
+        ]);
+        self::assertNull(Contact::find($oldContact["data"]["id"]));
+
+    }
+    public function testDeleteContactFailNotFound(): void{
+        $oldContact = $this->testCreateContactSuccess();
+        $response = $this->delete(
+            "/api/contacts/". ($oldContact["data"]["id"] + 1),
+            [],
+            [
+                "Authorization"=> "test"
+                ]
+        );
+        
+        $response->assertStatus(404);
+    }
+    public function testDeleteContactFailUnauthorized(): void{
+        $oldContact = $this->testCreateContactSuccess();
+        $response = $this->delete(
+            "/api/contacts/". ($oldContact["data"]["id"] + 1),
+            [],
+            [
+                "Authorization"=> "tes"
+                ]
+        );
+        
+        $response->assertJson([
+            "errors"=>[
+                "message"=>"Unauthorized"
+            ]   
+            ]);
+        $response->assertStatus(401);
+    }
+
 
 }
