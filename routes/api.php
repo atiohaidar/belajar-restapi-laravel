@@ -31,6 +31,7 @@ Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function
         Route::get("/", [ContactController::class, "list"])->name("contact.list");
         Route::prefix("/{idContact}/addresses")->group(function () {
             Route::post("/", [AddressController::class, "create"])->name("address.create");
+            Route::get("/{idAddress}", [AddressController::class, "get"])->name("address.get"); 
         });
     });
 });
