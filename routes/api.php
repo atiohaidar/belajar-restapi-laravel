@@ -24,5 +24,6 @@ Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function
     Route::delete("/users/logout", [UserController::class,"logout"]);
     Route::prefix("/contacts")->group(function () {
         Route::post("/", [ContactController::class,"create"])->name("contact.create");
+        Route::put("/{id}", [ContactController::class,"update"])->name("contact.update");
     });
 });

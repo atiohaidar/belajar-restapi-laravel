@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Contact;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,7 +14,7 @@ class ContactTest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function testCreateContactSuccess(): void
+    public function testCreateContactSuccess()
     {
 
         $user = $this->seed(UserSeeder::class);
@@ -37,6 +38,7 @@ class ContactTest extends TestCase
                 'phone' => 'test',
             ]
         ]);
+        return $response->json();
     }
     public function testCreateContactFailedNotFoundUser(): void
     {
@@ -57,5 +59,46 @@ class ContactTest extends TestCase
                 "message" => "Unauthorized"
             ]
         ]);
+    }
+    public function testUpdateContactSuccess(): void
+    {
+        $oldContact = $this->testCreateContactSuccess();
+        $response = $this->put('/api/contacts/' . $oldContact["data"]["id"], [
+            'firstname' => 'test',
+            'lastname' => 'test',
+            'email' => 'waduh',
+            'phone' => 'wa',
+        ], [
+            "Authorization" => "test"
+        ]);
+        $response->assertStatus(status: 200);
+        $response->assertJson([
+            "data" => [
+                "id" => "1",
+                'firstname' => 'test',
+                'lastname' => 'test',
+                'email' => 'waduh',
+                'phone' => 'wa',
+            ]
+        ]);
+        self::assertNotEquals($oldContact["data"]["email"], $response->json()["data"]["email"]);
+
+    }
+    public function testUpdateContactErrorInput(): void
+    {
+        $oldContact = $this->testCreateContactSuccess();
+        $response = $this->put('/api/contacts/' . $oldContact["data"]["id"], [
+
+        ], [
+            "Authorization" => "test"
+        ]);
+        $response->assertStatus(status: 400);
+        $response->assertJson([
+            "errors" => [
+                "firstname" => ["The firstname field is required."]
+            ]
+        ]);
+        self::assertEquals($oldContact["data"]["email"], Contact::find($oldContact["data"]["id"])->email);
+
     }
 }
