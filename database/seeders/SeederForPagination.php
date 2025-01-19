@@ -39,7 +39,7 @@ class SeederForPagination extends Seeder
             ]);
         }
         for ($i = 1; $i <= 10; $i++) {
-            $contact = Contact::where("id", $i)->first();
+            $contact = Contact::where("id", $i  )->first();
             // print($contact);
             Address::create([
                 'street' => "Jalan" . $i,

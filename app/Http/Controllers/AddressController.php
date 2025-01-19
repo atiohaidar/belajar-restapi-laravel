@@ -74,16 +74,31 @@ class AddressController extends Controller
         $address = $this->fetchDataAddress($contact, $idAddress);
         return new AddressResource($address);
     }
-    public function update(int $idAddress, AddressUpdateRequest $request)
+    public function update(int $idContact, int $idAddress, AddressUpdateRequest $request)
     {
-
+        $user = Auth::user();
+        $data = $request->validated();
+        $contact = $this->fetchDataContact($user, $idContact);
+        $address = $this->fetchDataAddress($contact, $idAddress);
+        $address->fill($data);
+        $address->save();
+        return new AddressResource($address);
     }
-    public function list(int $idAddress, Request $request)
+    public function list(int $idContact, Request $request)
     {
-
+        $user = Auth::user();
+        $contact = $this->fetchDataContact($user, $idContact);
+        $addresses = Address::where("contact_id", $contact->id)->get();
+        return AddressResource::collection($addresses);
     }
-    public function delete(int $idAddress, Request $request)
+    public function delete(int $idContact, int $idAddress, Request $request)
     {
-
+        $user = Auth::user();
+        $contact = $this->fetchDataContact($user, $idContact);
+        $address = $this->fetchDataAddress($contact, $idAddress);
+        $address->delete();
+        return response()->json([
+            "data" => true
+        ]);
     }
 }
