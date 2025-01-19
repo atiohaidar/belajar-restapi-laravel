@@ -18,3 +18,27 @@
 - buat resource collection untuk fitur list
 - buat routes
 - buat unit test
+
+What Next
+https://trello.com/b/qD97611L/belajar-laravel-restfull-api
+
+- Fitur Role Admin - User - Guest
+- Fitur Ticketing
+-- User membuat Tiket
+-- User melihat tiket yang dibuat beserta progressnya
+-- user bisa mengupdate tiket
+-- user bisa menghapus tiketnya
+-- user bisa melihat tiket orang lain yang di publish
+-- admin bisa mengupdate sttatus progress tiket
+-- admin bisa mengupdate akses tiekt user
+-- admin bisa CRUD tiket
+- Fitur FAQ
+-- Admin bisa CRUD FAQ
+-- User bisa memberi komentar pada FAQ
+-- User bisa melihat FAQ
+-- User bisa memberi komentar pada FAQ
+- Fitur Notifikasi
+
+
+- Fitur 
+
