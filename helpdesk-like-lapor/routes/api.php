@@ -25,11 +25,13 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
     });
 
 Route::get("/send-email", function(Request $request) {
-    $email = new \App\Mail\SendEmail([
-        "nama"=> "Engga Tau",
+    $data = [
+"nama"=> "ips",
         "imail"=> $request->query("email"),
-        "ini_pesannya"=> "Ini adalah pesan dari laravel",
-    ]);
-    Mail::to($request->query("email"))->send($email);
+        "ini_pesannya"=> " dari laravel",
+    ];
+    dispatch(new \App\Jobs\SendEmailJob($data));
+
+    
     return response()->json(['message' => 'Email sent successfully' ]);
 });
