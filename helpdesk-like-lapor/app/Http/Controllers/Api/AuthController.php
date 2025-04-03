@@ -45,6 +45,26 @@ class AuthController extends Controller
 
         return response()->json(['token' => $token]);
     }
+    public function register(Request $request): JsonResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role'=> ['required', 'string', 'in:Admin,Agency Manager,Reporter'],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role'=> $request->role,
+        ]);
+
+        return response()->json(['message' => 'User registered successfully'])->setStatusCode(201);
+    }
 
     /**
      * Get the authenticated user's information.

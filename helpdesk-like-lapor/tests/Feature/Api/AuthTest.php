@@ -126,5 +126,19 @@ class AuthTest extends TestCase
          // Verify token deleted from DB
          $this->assertCount(0, $this->user->tokens); // Check relationship
     }
+    public function test_user_can_register(){
+        $response = $this->postJson(route('api.register'), [
+          `  'name'=> 'Test 1',
+            'username'=> 'testuser1',
+            'email'=> 'email@test.com',
+            'password'=> 'password',
+            'password_confirmation'=> 'password',
+            'role'=> 'Admin',`
+        ]);
+        $response->assertStatus(201);
+        $response->assertJson([
+            'message' => 'User registered successfully'
+        ]);
 
+    }
 }

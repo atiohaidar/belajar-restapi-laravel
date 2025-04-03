@@ -98,6 +98,8 @@ class AgencyController extends Controller
          if ($agency->childAgencies()->exists()) {
              return response(['message' => 'Cannot delete agency with sub-agencies.'], Response::HTTP_CONFLICT);
          }
+         // kalau tidak ada
+         
         // Add checks for transfers, followups, ratings if strict deletion required
 
         $agency->delete();

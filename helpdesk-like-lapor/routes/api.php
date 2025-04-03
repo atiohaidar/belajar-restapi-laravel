@@ -5,9 +5,13 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ComplaintCategoryController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
+
 
 // Authentication Routes
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+Route::post('/register', [AuthController::class, 'register'])->name('api.register');
 
 // Routes requiring authentication (Sanctum middleware)
     Route::middleware('auth:sanctum')->group(function () {
@@ -15,7 +19,17 @@ Route::post('/login', [AuthController::class, 'login'])->name('api.login');
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
         Route::apiResource('complaint-categories', ComplaintCategoryController::class);
         Route::apiResource('agencies', AgencyController::class);
-
         // Other protected routes will go inside this group
         Route::apiResource('users', UserController::class);
+
     });
+
+Route::get("/send-email", function(Request $request) {
+    $email = new \App\Mail\SendEmail([
+        "nama"=> "Engga Tau",
+        "imail"=> $request->query("email"),
+        "ini_pesannya"=> "Ini adalah pesan dari laravel",
+    ]);
+    Mail::to($request->query("email"))->send($email);
+    return response()->json(['message' => 'Email sent successfully' ]);
+});
