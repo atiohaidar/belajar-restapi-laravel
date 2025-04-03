@@ -1,66 +1,309 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# iya tau ini make laravel
+kode plauml nya?
+```
+@startuml
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+entity "User" as user {
+  +id: TEXT [PK]  -- UUID stored as TEXT
+  --
+  +name: TEXT NOT NULL
+  +username: TEXT UNIQUE NOT NULL
+  +password: TEXT NOT NULL  -- Store hashed password
+  +email: TEXT UNIQUE NOT NULL
+  +phone: TEXT
+  +role: TEXT NOT NULL CHECK (role IN ('Admin', 'Agency Manager', 'Reporter'))
+  +last_login: TEXT -- ISO8601 format
+  +last_active: TEXT -- ISO8601 format
+  +agency_id: TEXT [FK -> agency.id] -- User belongs to an Agency (optional for Admin/Reporter?)
+}
 
-## About Laravel
+entity "Agency" as agency {
+  +id: TEXT [PK] -- UUID stored as TEXT
+  --
+  +name: TEXT NOT NULL
+  +address: TEXT
+  +email: TEXT
+  +phone: TEXT
+  +parent_id: TEXT [FK -> agency.id] -- Self-referencing for hierarchy
+}
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+entity "Complaint" as complaint {
+  +id: TEXT [PK] -- UUID stored as TEXT
+  --
+  +user_id: TEXT [FK -> user.id] -- User who filed the complaint
+  +agency_id: TEXT [FK -> agency.id] -- Agency currently assigned
+  +category_id: TEXT [FK -> category.id]
+  +title: TEXT NOT NULL -- Added Title
+  +description: TEXT NOT NULL
+  +status: TEXT NOT NULL CHECK (status IN ('Unprocessed', 'Pending', 'In Progress', 'Resolved', 'Archived')) DEFAULT 'Unprocessed'
+  +priority: TEXT NOT NULL CHECK (priority IN ('Low', 'Medium', 'High')) DEFAULT 'Medium'
+  +created_at: TEXT NOT NULL -- ISO8601 format
+}
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+entity "Complaint Category" as category {
+  +id: TEXT [PK] -- UUID stored as TEXT
+  --
+  +name: TEXT UNIQUE NOT NULL
+  +description: TEXT
+}
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+entity "ComplaintAttachment" as attachment {
+ +id: TEXT [PK] -- UUID stored as TEXT
+ --
+ +complaint_id: TEXT NOT NULL [FK -> complaint.id]
+ +file_path: TEXT NOT NULL -- Path on server or URL to cloud storage
+ +file_name: TEXT NOT NULL -- Original file name
+ +mime_type: TEXT -- e.g., 'image/jpeg', 'application/pdf'
+ +uploaded_at: TEXT NOT NULL -- ISO8601 format
+}
 
-## Learning Laravel
+entity "Notification" as notification {
+  +id: TEXT [PK] -- UUID stored as TEXT
+  --
+  +user_id: TEXT NOT NULL [FK -> user.id]
+  +complaint_id: TEXT [FK -> complaint.id] -- Optional, notification might not be about a specific complaint
+  +message: TEXT NOT NULL
+  +is_read: INTEGER NOT NULL CHECK (is_read IN (0, 1)) DEFAULT 0 -- 0=false, 1=true
+  +created_at: TEXT NOT NULL -- ISO8601 format
+}
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+entity "Complaint Follow-Up" as followup {
+  +id: TEXT [PK] -- UUID stored as TEXT
+  --
+  +complaint_id: TEXT NOT NULL [FK -> complaint.id]
+  +user_id: TEXT NOT NULL [FK -> user.id] -- User who performed the follow-up (likely Agency Manager/Admin)
+  +agency_id: TEXT [FK -> agency.id] -- Agency context if needed, though user's agency might suffice
+  +description: TEXT NOT NULL
+  +created_at: TEXT NOT NULL -- ISO8601 format
+}
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+entity "Complaint Transfer" as transfer {
+  +id: TEXT [PK] -- UUID stored as TEXT
+  --
+  +complaint_id: TEXT NOT NULL [FK -> complaint.id]
+  +from_agency_id: TEXT [FK -> agency.id]
+  +to_agency_id: TEXT NOT NULL [FK -> agency.id]
+  +user_id: TEXT NOT NULL [FK -> user.id] -- User who initiated the transfer
+  +reason: TEXT
+  +created_at: TEXT NOT NULL -- ISO8601 format
+}
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+entity "Rating" as rating {
+  +id: TEXT [PK] -- UUID stored as TEXT
+  --
+  +user_id: TEXT NOT NULL [FK -> user.id] -- User who gave the rating
+  +agency_id: TEXT NOT NULL [FK -> agency.id] -- Agency being rated
+  +complaint_id: TEXT [FK -> complaint.id] -- Optional: rating related to a specific resolved complaint
+  +stars: INTEGER NOT NULL CHECK (stars >= 1 AND stars <= 5)
+  +review: TEXT
+  +created_at: TEXT NOT NULL -- ISO8601 format
+}
 
-## Laravel Sponsors
+entity "Complaint Log" as log {
+  +id: TEXT [PK] -- UUID stored as TEXT
+  --
+  +complaint_id: TEXT NOT NULL [FK -> complaint.id]
+  +user_id: TEXT [FK -> user.id] -- User performing the action (can be null if system action)
+  +action: TEXT NOT NULL -- e.g., "Created", "Status changed to Pending", "Assigned to Agency X"
+  +details: TEXT -- Optional additional details
+  +timestamp: TEXT NOT NULL -- ISO8601 format
+}
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+entity "Comment" as comment {
+  +id: TEXT [PK] -- UUID stored as TEXT
+  --
+  +complaint_id: TEXT NOT NULL [FK -> complaint.id]
+  +user_id: TEXT NOT NULL [FK -> user.id] -- User who wrote the comment
+  +message: TEXT NOT NULL
+  +created_at: TEXT NOT NULL -- ISO8601 format
+}
 
-### Premium Partners
+' Relationships
+user "1" -- "*" complaint : "Reports >"
+user "*" -- "1" agency : "< Works At / Manages" ' User associated with an Agency
+user "1" -- "*" comment : "Writes >"
+user "1" -- "*" followup : "Performs >"
+user "1" -- "*" notification : "< Receives"
+user "1" -- "*" log : "< Performed By"
+user "1" -- "*" transfer : "Initiates >"
+user "1" -- "*" rating : "Gives >"
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+agency "1" -- "*" agency : "Has Sub-Agencies >" ' Self-referencing for parent/child
+agency "1" -- "*" user : "Employs / Has Member >"
+agency "1" -- "*" complaint : "< Assigned To"
+agency "1" -- "*" followup : "< Handled By"
+agency "1" -- "*" transfer : "< Transferred From"
+agency "1" -- "*" transfer : "< Transferred To"
+agency "1" -- "*" rating : "< Rated"
 
-## Contributing
+complaint "1" -- "*" comment : "Has >"
+complaint "1" -- "*" followup : "Has >"
+complaint "1" -- "*" notification : "Relates To >"
+complaint "1" -- "*" log : "History Of >"
+complaint "1" -- "*" transfer : "Subject Of >"
+complaint "1" -- "*" rating : "Basis For >"
+complaint "1" -- "*" attachment : "Has Attachments >"
+complaint "*" -- "1" category : "< Belongs To"
+complaint "*" -- "1" user : "< Filed By"
+complaint "*" -- "1" agency : "< Assigned To"
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+category "1" -- "*" complaint : "Categorizes >"
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+attachment "*" -- "1" complaint : "< Attached To"
 
-## Security Vulnerabilities
+@enduml
+```
+sql nya?
+```
+-- Enable Foreign Key support
+PRAGMA foreign_keys = ON;
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+-- Table for Agencies (can have hierarchy)
+CREATE TABLE Agency (
+    id TEXT PRIMARY KEY, -- UUID
+    name TEXT NOT NULL,
+    address TEXT,
+    email TEXT,
+    phone TEXT,
+    parent_id TEXT, -- Self-referencing FK for hierarchy
+    FOREIGN KEY (parent_id) REFERENCES Agency(id) ON DELETE SET NULL -- Set parent to NULL if parent deleted
+);
 
-## License
+-- Table for Users
+CREATE TABLE User (
+    id TEXT PRIMARY KEY, -- UUID
+    name TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL, -- Store hashed password!
+    email TEXT UNIQUE NOT NULL,
+    phone TEXT,
+    role TEXT NOT NULL CHECK (role IN ('Admin', 'Agency Manager', 'Reporter')),
+    last_login TEXT, -- ISO8601 Format e.g., '2023-10-27T10:00:00Z'
+    last_active TEXT, -- ISO8601 Format
+    agency_id TEXT, -- User might belong to an agency
+    FOREIGN KEY (agency_id) REFERENCES Agency(id) ON DELETE SET NULL -- User remains if agency deleted
+);
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-- Table for Complaint Categories
+CREATE TABLE ComplaintCategory (
+    id TEXT PRIMARY KEY, -- UUID
+    name TEXT UNIQUE NOT NULL,
+    description TEXT
+);
+
+-- Table for Complaints
+CREATE TABLE Complaint (
+    id TEXT PRIMARY KEY, -- UUID
+    user_id TEXT, -- User who filed the complaint (can be NULL if anonymous or user deleted)
+    agency_id TEXT, -- Agency currently assigned (can be NULL if unassigned or agency deleted)
+    category_id TEXT, -- Category of the complaint (can be NULL if category deleted)
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('Unprocessed', 'Pending', 'In Progress', 'Resolved', 'Archived')) DEFAULT 'Unprocessed',
+    priority TEXT NOT NULL CHECK (priority IN ('Low', 'Medium', 'High')) DEFAULT 'Medium',
+    created_at TEXT NOT NULL, -- ISO8601 Format
+    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE SET NULL,
+    FOREIGN KEY (agency_id) REFERENCES Agency(id) ON DELETE SET NULL,
+    FOREIGN KEY (category_id) REFERENCES ComplaintCategory(id) ON DELETE SET NULL
+);
+
+-- Table for Complaint Attachments (Metadata)
+CREATE TABLE ComplaintAttachment (
+   id TEXT PRIMARY KEY, -- UUID
+   complaint_id TEXT NOT NULL,
+   file_path TEXT NOT NULL, -- Path on server or URL
+   file_name TEXT NOT NULL, -- Original filename
+   mime_type TEXT, -- e.g., 'image/jpeg'
+   uploaded_at TEXT NOT NULL, -- ISO8601 Format
+   FOREIGN KEY (complaint_id) REFERENCES Complaint(id) ON DELETE CASCADE -- Delete attachments if complaint deleted
+);
+
+-- Table for Notifications
+CREATE TABLE Notification (
+    id TEXT PRIMARY KEY, -- UUID
+    user_id TEXT NOT NULL,
+    complaint_id TEXT, -- Optional link to a complaint
+    message TEXT NOT NULL,
+    is_read INTEGER NOT NULL CHECK (is_read IN (0, 1)) DEFAULT 0, -- 0=false, 1=true
+    created_at TEXT NOT NULL, -- ISO8601 Format
+    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE, -- Delete notification if user deleted
+    FOREIGN KEY (complaint_id) REFERENCES Complaint(id) ON DELETE SET NULL -- Keep notification if complaint deleted
+);
+
+-- Table for Complaint Follow-Ups
+CREATE TABLE ComplaintFollowUp (
+    id TEXT PRIMARY KEY, -- UUID
+    complaint_id TEXT NOT NULL,
+    user_id TEXT NOT NULL, -- User performing the follow-up
+    agency_id TEXT, -- Agency context if needed
+    description TEXT NOT NULL,
+    created_at TEXT NOT NULL, -- ISO8601 Format
+    FOREIGN KEY (complaint_id) REFERENCES Complaint(id) ON DELETE CASCADE, -- Delete follow-up if complaint deleted
+    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE, -- Delete follow-up if user deleted
+    FOREIGN KEY (agency_id) REFERENCES Agency(id) ON DELETE SET NULL
+);
+
+-- Table for Complaint Transfers
+CREATE TABLE ComplaintTransfer (
+    id TEXT PRIMARY KEY, -- UUID
+    complaint_id TEXT NOT NULL,
+    from_agency_id TEXT, -- Can be NULL if initially assigned from unassigned
+    to_agency_id TEXT NOT NULL,
+    user_id TEXT NOT NULL, -- User who initiated transfer
+    reason TEXT,
+    created_at TEXT NOT NULL, -- ISO8601 Format
+    FOREIGN KEY (complaint_id) REFERENCES Complaint(id) ON DELETE CASCADE,
+    FOREIGN KEY (from_agency_id) REFERENCES Agency(id) ON DELETE SET NULL,
+    FOREIGN KEY (to_agency_id) REFERENCES Agency(id) ON DELETE CASCADE, -- If target agency deleted, transfer history might be less relevant? Or SET NULL? Let's use CASCADE for simplicity here.
+    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE SET NULL -- Keep transfer record even if user deleted
+);
+
+-- Table for Ratings
+CREATE TABLE Rating (
+    id TEXT PRIMARY KEY, -- UUID
+    user_id TEXT NOT NULL, -- User giving the rating
+    agency_id TEXT NOT NULL, -- Agency being rated
+    complaint_id TEXT, -- Optional: Rating associated with a specific complaint
+    stars INTEGER NOT NULL CHECK (stars >= 1 AND stars <= 5),
+    review TEXT,
+    created_at TEXT NOT NULL, -- ISO8601 Format
+    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE,
+    FOREIGN KEY (agency_id) REFERENCES Agency(id) ON DELETE CASCADE, -- Delete rating if agency deleted
+    FOREIGN KEY (complaint_id) REFERENCES Complaint(id) ON DELETE SET NULL -- Keep rating if complaint deleted
+);
+
+-- Table for Complaint Logs (History)
+CREATE TABLE ComplaintLog (
+    id TEXT PRIMARY KEY, -- UUID using randomblob(16) or similar function in application layer
+    complaint_id TEXT NOT NULL,
+    user_id TEXT, -- Can be NULL for system actions
+    action TEXT NOT NULL, -- e.g., 'Created', 'Status Update', 'Assigned'
+    details TEXT, -- e.g., 'Status changed from Pending to In Progress'
+    timestamp TEXT NOT NULL, -- ISO8601 Format
+    FOREIGN KEY (complaint_id) REFERENCES Complaint(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE SET NULL
+);
+
+-- Table for Comments on Complaints
+CREATE TABLE Comment (
+    id TEXT PRIMARY KEY, -- UUID
+    complaint_id TEXT NOT NULL,
+    user_id TEXT NOT NULL, -- User writing the comment
+    message TEXT NOT NULL,
+    created_at TEXT NOT NULL, -- ISO8601 Format
+    FOREIGN KEY (complaint_id) REFERENCES Complaint(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- Indexes for performance
+CREATE INDEX idx_complaint_status ON Complaint(status);
+CREATE INDEX idx_complaint_agency ON Complaint(agency_id);
+CREATE INDEX idx_complaint_user ON Complaint(user_id);
+CREATE INDEX idx_complaint_category ON Complaint(category_id);
+CREATE INDEX idx_user_username ON User(username);
+CREATE INDEX idx_notification_user_read ON Notification(user_id, is_read);
+CREATE INDEX idx_log_complaint_time ON ComplaintLog(complaint_id, timestamp);
+CREATE INDEX idx_comment_complaint_time ON Comment(complaint_id, created_at);
+CREATE INDEX idx_attachment_complaint ON ComplaintAttachment(complaint_id);
+```
