@@ -16,7 +16,8 @@ class UserFactory extends Factory {
             'email' => $this->faker->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
             'phone' => $this->faker->phoneNumber,
-            'role' => $this->faker->randomElement(['Admin', 'Agency Manager', 'Reporter']),
+            // 'role' => $this->faker(['Admin', 'Agency Manager', 'Reporter']),
+            'role'=>'Reporter',
             'agency_id' => null, // Default, can be overridden
             'remember_token' => Str::random(10),
         ];

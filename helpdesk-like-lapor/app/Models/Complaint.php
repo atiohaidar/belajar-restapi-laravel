@@ -45,6 +45,10 @@ class Complaint extends Model
     {
         return $this->belongsTo(ComplaintCategory::class, 'category_id');
     }
+    public function complaintCategory(): BelongsTo
+    {
+        return $this->belongsTo(ComplaintCategory::class, 'category_id');
+    }
 
     // Relationship: Complaint has many attachments
     public function attachments(): HasMany

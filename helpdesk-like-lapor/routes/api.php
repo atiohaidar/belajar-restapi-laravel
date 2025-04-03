@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AgencyController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ComplaintCategoryController;
+use App\Http\Controllers\Api\ComplaintController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', [AuthController::class, 'user'])->name('api.user');
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+        Route::apiResource('complaints', ComplaintController::class);
         Route::apiResource('complaint-categories', ComplaintCategoryController::class);
         Route::apiResource('agencies', AgencyController::class);
         // Other protected routes will go inside this group
