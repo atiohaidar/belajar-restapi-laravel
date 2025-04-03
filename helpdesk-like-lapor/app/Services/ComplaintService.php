@@ -6,6 +6,7 @@ namespace App\Services; // <-- Pastikan namespace benar
 use App\Models\Complaint;
 use App\Models\ComplaintAttachment;
 use App\Models\ComplaintLog;
+use App\Models\ComplaintTransfer;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -162,5 +163,49 @@ class ComplaintService
             'details' => $details,
             'timestamp' => now(),
         ]);
+    }
+    /**
+     * Transfer a complaint to a new agency.
+     * Updates the complaint, creates transfer record, and adds log.
+     *
+     * @param Complaint $complaint
+     * @param array $validatedData ['to_agency_id', 'reason']
+     * @param User $initiator User initiating the transfer
+     * @return Complaint The updated complaint instance
+     */
+    public function transferComplaint(Complaint $complaint, array $validatedData, User $initiator): Complaint
+    {
+        return DB::transaction(function () use ($complaint, $validatedData, $initiator) {
+            $fromAgencyId = $complaint->agency_id; // Get current agency ID before update
+            $fromAgencyName = $complaint->agency?->name ?? 'Unassigned';
+            $toAgencyId = $validatedData['to_agency_id'];
+            $reason = $validatedData['reason'] ?? null;
+
+            // 1. Update Complaint's Agency
+            $complaint->update(['agency_id' => $toAgencyId]);
+            $complaint->refresh(); // Get updated state including new agency relation if needed
+            $toAgencyName = $complaint->agency?->name ?? 'Unknown'; // Get name after update
+
+            // 2. Create Transfer Record
+            ComplaintTransfer::create([
+                'complaint_id' => $complaint->id,
+                'from_agency_id' => $fromAgencyId,
+                'to_agency_id' => $toAgencyId,
+                'user_id' => $initiator->id,
+                'reason' => $reason,
+            ]);
+
+            // 3. Add Log Entry
+            $logDetails = "Transferred from Agency: {$fromAgencyName} to Agency: {$toAgencyName}.";
+            if ($reason) {
+                $logDetails .= " Reason: {$reason}";
+            }
+            $this->addLog($complaint, $initiator, 'Transferred', $logDetails);
+
+            // 4. Optional: Dispatch Transfer Event for Notifications
+            // event(new \App\Events\ComplaintTransferred($complaint, $fromAgencyId, $toAgencyId));
+
+            return $complaint;
+        });
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreCommentRequest;
 use App\Http\Requests\Api\StoreComplaintRequest;
+use App\Http\Requests\Api\TransferComplaintRequest;
 use App\Http\Requests\Api\UpdateComplaintRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\ComplaintResource;
@@ -217,5 +218,32 @@ class ComplaintController extends Controller
         return (new CommentResource($comment))
                 ->response()
                 ->setStatusCode(Response::HTTP_CREATED);
+    }
+    /**
+     * Initiate a transfer for the specified complaint.
+     */
+    public function transfer(TransferComplaintRequest $request, Complaint $complaint): JsonResponse // Or ComplaintResource? TransferResource?
+    {
+        // Authorization handled by TransferComplaintRequest
+        $validated = $request->validated();
+        $initiator = Auth::user();
+
+        try {
+            $updatedComplaint = $this->complaintService->transferComplaint($complaint, $validated, $initiator);
+
+            // What to return? The updated complaint or the transfer record?
+            // Let's return the updated complaint resource for consistency with update endpoint
+             $updatedComplaint->load(['user', 'category', 'agency']); // Load relations
+             ComplaintResource::$loadRelationships = true;
+             return new JsonResponse(new ComplaintResource($updatedComplaint), Response::HTTP_OK);
+
+            // Alternative: Return the newly created transfer record
+            // $transferRecord = $updatedComplaint->transfers()->latest()->first()->load(['user', 'fromAgency', 'toAgency']);
+            // return new JsonResponse(new ComplaintTransferResource($transferRecord), Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+             \Log::error("Complaint transfer failed: " . $e->getMessage(), ['complaint_id' => $complaint->id, 'user_id' => $initiator->id]);
+             return response()->json(['message' => 'Failed to transfer complaint. An error occurred.'], 500);
+         }
     }
 }

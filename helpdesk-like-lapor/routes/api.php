@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ComplaintCategoryController;
 use App\Http\Controllers\Api\ComplaintController;
+use App\Http\Controllers\Api\ComplaintFollowUpController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -29,8 +30,12 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
         // Other protected routes will go inside this group
         Route::apiResource('users', UserController::class);
         Route::apiResource('comments', CommentController::class)->only(['destroy']);
+        Route::post('/complaints/{complaint}/follow-ups', [ComplaintFollowUpController::class, 'store'])
+        ->name('complaints.follow-ups.store');
+        Route::apiResource('complaint-follow-ups', ComplaintFollowUpController::class)->only(['destroy']);
 
-        
+        Route::post('/complaints/{complaint}/transfer', [ComplaintController::class, 'transfer'])
+         ->name('complaints.transfer');
 
     });
 

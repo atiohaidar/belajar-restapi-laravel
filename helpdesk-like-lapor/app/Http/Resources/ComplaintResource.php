@@ -58,6 +58,9 @@ class ComplaintResource extends JsonResource
              $this->mergeWhen(static::$loadRelationships && $this->relationLoaded('logs'), [
                  'logs' => ComplaintLogResource::collection($this->logs),
              ]),
+             $this->mergeWhen(static::$loadRelationships && $this->relationLoaded('transfers'), [
+                'transfers' => ComplaintTransferResource::collection($this->transfers),
+            ]),
             // Add followups, transfers, ratings when those resources/models exist and are loaded
         ];
     }
