@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 class AgencyController extends Controller
 {
     public function __construct()
+    
     {
         // Policy applied automatically via AuthServiceProvider mapping or manually here
          $this->authorizeResource(Agency::class, 'agency');

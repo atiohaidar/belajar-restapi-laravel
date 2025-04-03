@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ComplaintCategoryController;
 use App\Http\Controllers\Api\ComplaintController;
 use App\Http\Controllers\Api\ComplaintFollowUpController;
+use App\Http\Controllers\Api\RatingController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -36,6 +37,8 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
 
         Route::post('/complaints/{complaint}/transfer', [ComplaintController::class, 'transfer'])
          ->name('complaints.transfer');
+         Route::apiResource('ratings', RatingController::class)->except(['update']);
+
 
     });
 
