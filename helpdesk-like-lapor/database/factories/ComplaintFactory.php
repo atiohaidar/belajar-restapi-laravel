@@ -9,6 +9,8 @@ class ComplaintFactory extends Factory {
     protected $model = Complaint::class;
     public function definition(): array {
         return [
+            'id' => $this->faker->unique()->uuid(),
+
             // Ensure related models are created if not provided
             'user_id' => User::factory(),
             'agency_id' => Agency::factory(),

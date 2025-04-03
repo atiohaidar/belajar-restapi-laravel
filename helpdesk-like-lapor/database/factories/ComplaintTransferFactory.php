@@ -28,6 +28,8 @@ class ComplaintTransferFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => $this->faker->unique()->uuid(),
+
             'complaint_id' => Complaint::factory(),
             // Creates a 'from' agency by default, can be set to null via state
             'from_agency_id' => Agency::factory(),

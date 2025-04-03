@@ -27,6 +27,8 @@ class NotificationFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => $this->faker->unique()->uuid(),
+
             'user_id' => User::factory(), // Creates a user if not provided
             // Creates a complaint by default, can be set to null when using the factory
             'complaint_id' => Complaint::factory(),

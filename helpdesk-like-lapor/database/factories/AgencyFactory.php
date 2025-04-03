@@ -6,6 +6,7 @@ class AgencyFactory extends Factory {
     protected $model = Agency::class;
     public function definition(): array {
         return [
+            'id' => $this->faker->unique()->uuid(),
             'name' => $this->faker->company,
             'address' => $this->faker->address,
             'email' => $this->faker->unique()->safeEmail,

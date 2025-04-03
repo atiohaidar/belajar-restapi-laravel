@@ -10,6 +10,7 @@ class UserFactory extends Factory {
     protected static ?string $password;
     public function definition(): array {
         return [
+            'id' => $this->faker->unique()->uuid(),
             'name' => $this->faker->name(),
             'username' => $this->faker->unique()->userName(),
             'email' => $this->faker->unique()->safeEmail(),

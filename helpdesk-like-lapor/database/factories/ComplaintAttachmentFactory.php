@@ -28,6 +28,8 @@ class ComplaintAttachmentFactory extends Factory
     {
         $fileName = Str::random(10) . '_' . $this->faker->word . '.' . $this->faker->randomElement(['jpg', 'png', 'pdf', 'docx']);
         return [
+            'id' => $this->faker->unique()->uuid(),
+
             'complaint_id' => Complaint::factory(), // Creates a complaint if not provided
             'file_path' => '/uploads/complaints/' . $fileName, // Example path
             'file_name' => $fileName,

@@ -37,6 +37,8 @@ class ComplaintLogFactory extends Factory
         }
 
         return [
+            'id' => $this->faker->unique()->uuid(),
+
             'complaint_id' => Complaint::factory(),
             // Creates a user by default, can be set to null via state
             'user_id' => User::factory(),

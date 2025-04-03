@@ -307,3 +307,11 @@ CREATE INDEX idx_log_complaint_time ON ComplaintLog(complaint_id, timestamp);
 CREATE INDEX idx_comment_complaint_time ON Comment(complaint_id, created_at);
 CREATE INDEX idx_attachment_complaint ON ComplaintAttachment(complaint_id);
 ```
+
+sebenenrya untuk email tuh harus ada password app yna,, itu bisa cari di google. untuk queue, inii aga kompleks
+
+Todo yang harus dipelajari
+- Policy&Gate
+- Queue
+- Event Handler
+- Broadcast

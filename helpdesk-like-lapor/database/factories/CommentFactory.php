@@ -27,6 +27,8 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => $this->faker->unique()->uuid(),
+
             'complaint_id' => Complaint::factory(),
             'user_id' => User::factory(),
             'message' => $this->faker->paragraph(2),

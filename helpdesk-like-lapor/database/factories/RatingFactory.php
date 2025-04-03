@@ -28,6 +28,8 @@ class RatingFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => $this->faker->unique()->uuid(),
+
             'user_id' => User::factory(),
             'agency_id' => Agency::factory(),
             // Creates a related complaint by default, can be set to null via state

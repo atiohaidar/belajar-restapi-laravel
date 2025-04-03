@@ -128,12 +128,12 @@ class AuthTest extends TestCase
     }
     public function test_user_can_register(){
         $response = $this->postJson(route('api.register'), [
-          `  'name'=> 'Test 1',
+           'name'=> 'Test 1',
             'username'=> 'testuser1',
             'email'=> 'email@test.com',
             'password'=> 'password',
             'password_confirmation'=> 'password',
-            'role'=> 'Admin',`
+            'role'=> 'Admin',
         ]);
         $response->assertStatus(201);
         $response->assertJson([
