@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreCommentRequest;
 use App\Http\Requests\Api\StoreComplaintRequest;
 use App\Http\Requests\Api\UpdateComplaintRequest;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\ComplaintResource;
 use App\Models\Complaint;
 // use App\Services\ComplaintService; // Import the service
@@ -191,4 +193,29 @@ class ComplaintController extends Controller
     //     // Placeholder: only return the direct ID for now
     //     return [$agencyId];
     // }
+    public function storeComment(StoreCommentRequest $request, Complaint $complaint): JsonResponse
+    {
+        // Authorization handled by StoreCommentRequest authorize() method
+
+        $validated = $request->validated();
+        $user = Auth::user();
+
+        $comment = $complaint->comments()->create([
+            'user_id' => $user->id,
+            'message' => $validated['message'],
+        ]);
+
+        // Eager load user for the response resource
+        $comment->load('user');
+
+        // Optional: Add a log entry
+        $this->complaintService->addLog($complaint, $user, 'Comment Added');
+
+        // Optional: Dispatch event for notifications
+        // event(new \App\Events\CommentAdded($comment));
+
+        return (new CommentResource($comment))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
+    }
 }

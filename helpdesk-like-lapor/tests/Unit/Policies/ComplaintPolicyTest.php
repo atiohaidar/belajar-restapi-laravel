@@ -74,7 +74,7 @@ class ComplaintPolicyTest extends TestCase
 
      public function test_reporter_cannot_view_others_complaint(): void
      {
-        
+
          $this->assertFalse($this->policy->view($this->reporter, $this->assignedComplaint));
      }
 
@@ -125,8 +125,8 @@ class ComplaintPolicyTest extends TestCase
     // addComment
     public function test_users_can_add_comment_based_on_role_and_ownership(): void
     {
-        $this->assertTrue($this->policy->addComment($this->admin, $this->reporterComplaint)); // Admin can comment anywhere
         $this->assertTrue($this->policy->addComment($this->reporter, $this->reporterComplaint)); // Reporter on own complaint
+        $this->assertTrue($this->policy->addComment($this->admin, $this->reporterComplaint)); // Admin can comment anywhere
         $this->assertFalse($this->policy->addComment($this->reporter, $this->assignedComplaint)); // Reporter not on other's
         $this->assertTrue($this->policy->addComment($this->manager, $this->assignedComplaint)); // Manager on assigned complaint
         $this->assertFalse($this->policy->addComment($this->manager, $this->otherAgencyComplaint)); // Manager not on other agency's

@@ -315,3 +315,5 @@ Todo yang harus dipelajari
 - Queue
 - Event Handler
 - Broadcast
+
+inget, kalo salah posisi file itu bisa ngatruh, salah namespace itu ngaruh

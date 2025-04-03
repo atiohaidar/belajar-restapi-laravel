@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AgencyController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ComplaintCategoryController;
 use App\Http\Controllers\Api\ComplaintController;
 use App\Http\Controllers\Api\UserController;
@@ -19,10 +20,17 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
         Route::get('/user', [AuthController::class, 'user'])->name('api.user');
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
         Route::apiResource('complaints', ComplaintController::class);
+        Route::post('/complaints/{complaint}/comments', [ComplaintController::class, 'storeComment'])
+        ->name('complaints.comments.store')
+        // Ensure route model binding works, {complaint} uses default 'id' key
+        ->middleware('can:addComment,complaint'); // Apply policy check inline
         Route::apiResource('complaint-categories', ComplaintCategoryController::class);
         Route::apiResource('agencies', AgencyController::class);
         // Other protected routes will go inside this group
         Route::apiResource('users', UserController::class);
+        Route::apiResource('comments', CommentController::class)->only(['destroy']);
+
+        
 
     });
 
