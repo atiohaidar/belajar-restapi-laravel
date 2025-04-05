@@ -17,7 +17,10 @@ class ComplaintFactory extends Factory {
             'category_id' => ComplaintCategory::factory(),
             'title' => $this->faker->sentence(6),
             'description' => $this->faker->paragraph(3),
-            'status' => $this->faker->randomElement(['Unprocessed', 'Pending', 'In Progress', 'Resolved', 'Archived']),
+            'status' => 'Unprocessed', // Default status
+            //  ini penyrebab kenapa di testcase test_users_can_add_comment_based_on_role_and_ownership kadang error dan kadang engga
+            //  pentyebabnya karena random, dan akan eror kalo ternyatra datanya lagi diarsipin
+            // 'status' => $this->faker->randomElement(['Unprocessed', 'Pending', 'In Progress', 'Resolved', 'Archived']),
             'priority' => $this->faker->randomElement(['Low', 'Medium', 'High']),
         ];
     }

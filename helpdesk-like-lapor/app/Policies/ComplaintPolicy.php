@@ -116,6 +116,7 @@ class ComplaintPolicy
       */
      public function addComment(User $user, Complaint $complaint): bool
      {
+        //  kita engga bisa nge komen yang udah diarsipin
          // Admin can always comment
          if ($user->role === 'Admin') return true;
 
