@@ -84,6 +84,8 @@ class RatingPolicyTest extends TestCase // Extends base TestCase
     // rateComplaint (specific complaint check)
     public function test_reporter_can_rate_own_resolved_complaint_once(): void
     {
+        // $this->markTestSkipped('Skipping test_reporter_can_rate_own_resolved_complaint_once'); // Skip this test
+
          // Delete the rating created in setUp to test the initial rate possibility
          $this->rating->delete();
         $this->assertTrue($this->policy->rateComplaint($this->reporter, $this->resolvedComplaint));

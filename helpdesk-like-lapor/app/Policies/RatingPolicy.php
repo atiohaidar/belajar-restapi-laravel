@@ -43,6 +43,9 @@ class RatingPolicy
      */
     public function create(User $user): bool // We'll add complaint check in request/controller
     {
+                // return false;
+
+        
         // Basic check: Only reporters can initiate rating creation
         return $user->role === 'Reporter';
     }
@@ -53,23 +56,25 @@ class RatingPolicy
       */
      public function rateComplaint(User $user, Complaint $complaint): bool
      {
+        //  return true;
+        print_r(value: $complaint->toArray());
          // 1. User must be the reporter who filed the complaint
          if ($user->id !== $complaint->user_id) {
              return false;
-         }
-         // 2. Complaint must be resolved
-         if ($complaint->status !== 'Resolved') {
-             return false;
-         }
-         // 3. Complaint must have an assigned agency to rate
-         if ($complaint->agency_id === null) {
-             return false;
-         }
-         // 4. User should not have already rated this specific complaint/agency interaction
-         $existingRating = Rating::where('user_id', $user->id)
-                                 ->where('complaint_id', $complaint->id)
-                                 // ->where('agency_id', $complaint->agency_id) // Optional: check agency too
-                                 ->exists();
+            }
+            // 2. Complaint must be resolved
+            if ($complaint->status !== 'Resolved') {
+                return false;
+            }
+            // 3. Complaint must have an assigned agency to rate
+            if ($complaint->agency_id === null) {
+                return false;
+            }
+            // 4. User should not have already rated this specific complaint/agency interaction
+            $existingRating = Rating::where('user_id', $user->id)
+            ->where('complaint_id', $complaint->id)
+            // ->where('agency_id', $complaint->agency_id) // Optional: check agency too
+            ->exists();
          return !$existingRating;
      }
 

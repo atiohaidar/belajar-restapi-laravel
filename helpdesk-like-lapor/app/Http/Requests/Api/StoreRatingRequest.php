@@ -23,21 +23,22 @@ class StoreRatingRequest extends FormRequest
         if (!$this->user() || $this->user()->role !== 'Reporter') {
             return false;
         }
-
+        return true; // algoritma di bawah di skip, jadi disini untuk otorisainya kebanyakan lewat policy aja
+        
         // 2. Check if rating is linked to a valid complaint ID
         if (!$this->input('complaint_id')) {
             // Allow general rating if needed? Or always require complaint_id?
             // For now, let's require complaint_id for rating.
             return false;
         }
-
+        
         // 3. Find the complaint instance
-         $this->complaintInstance = Complaint::query()->where('id', $this->input('complaint_id'))->first();
+        $this->complaintInstance = Complaint::query()->where('id', $this->input('complaint_id'))->first();
         if (!$this->complaintInstance) {
             // Complaint not found - validation will catch exists rule, but good to check here too
             return false; // Or maybe allow rating even if complaint deleted? Policy logic decides.
         }
-
+        
         // 4. Use the specific policy method: can the user rate THIS complaint?
         return $this->user()->can('rateComplaint', $this->complaintInstance);
     }
@@ -100,7 +101,7 @@ class StoreRatingRequest extends FormRequest
      protected function failedAuthorization()
      {
           throw new HttpResponseException(response()->json([
-              'message' => 'You do not have permission to rate this complaint or have already rated it.'
+              'message' => 'You do not have permission to rate this complaint or have already rated it. e'
           ], 403));
      }
 }

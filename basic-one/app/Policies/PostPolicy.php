@@ -9,6 +9,7 @@ class PostPolicy
     public function update(User $user, Post $post)
     {
         return $user->id === $post->user_id;
+        // return false;
     }
 
     public function delete(User $user, Post $post)

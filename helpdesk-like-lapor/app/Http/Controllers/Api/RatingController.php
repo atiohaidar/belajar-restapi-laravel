@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreRatingRequest;
 use App\Http\Resources\RatingResource;
 use App\Models\Agency; // Import Agency for potential filtering
+use App\Models\Complaint;
 use App\Models\Rating;
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -60,6 +62,9 @@ class RatingController extends Controller
     {
         // Authorization handled by StoreRatingRequest using simplified policy
         $validated = $request->validated();
+        $complaint = Complaint::find($validated['complaint_id']);
+
+        Gate::authorize('rateComplaint', [ Rating::class,$complaint]);        
         $user = Auth::user();
 
         // --- ADD CHECK FOR EXISTING RATING HERE ---
