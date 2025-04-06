@@ -125,12 +125,7 @@ class ComplaintPolicyTest extends TestCase
     // addComment
     public function test_users_can_add_comment_based_on_role_and_ownership(): void
     {
-        print("Reporter Complaint: \n");
-        print_r($this->reporterComplaint->toArray());
-        print("Assigned Complaint: \n");
-        print_r($this->assignedComplaint->toArray());
-        print("Reporter: \n");
-        print_r($this->reporter->toArray());
+
      
         $this->assertTrue($this->policy->addComment($this->reporter, $this->reporterComplaint)); // Reporter on own complaint
         $this->assertTrue($this->policy->addComment($this->admin, $this->reporterComplaint)); // Admin can comment anywhere

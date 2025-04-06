@@ -57,7 +57,6 @@ class RatingPolicy
      public function rateComplaint(User $user, Complaint $complaint): bool
      {
         //  return true;
-        print_r(value: $complaint->toArray());
          // 1. User must be the reporter who filed the complaint
          if ($user->id !== $complaint->user_id) {
              return false;

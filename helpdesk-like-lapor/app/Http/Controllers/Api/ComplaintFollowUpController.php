@@ -36,7 +36,6 @@ class ComplaintFollowUpController extends Controller
 
         $validated = $request->validated();
         $user = Auth::user();
-        // print_r($user->toArray());
         $followUp = $complaint->followUps()->create([
             'user_id' => $user->id,
             'description' => $validated['description'],

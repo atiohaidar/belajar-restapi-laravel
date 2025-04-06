@@ -284,7 +284,6 @@ class DatabaseSchemaAndModelsTest extends TestCase
      public function test_complaint_transfer_set_null_on_user_delete(): void
      {
          $transfer = ComplaintTransfer::factory()->create();
-         print_r($transfer->fresh()->toArray());
          $userId = $transfer->user_id;
          $transferId = $transfer->id;
          User::find($userId)->delete();

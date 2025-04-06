@@ -52,7 +52,6 @@ class RatingApiTest extends TestCase
         ];
 
         $response = $this->postJson(route('ratings.store'), $data);
-        print_r(value: $response->json()); // Debugging line
 
         $response->assertStatus(201)
                  ->assertJsonFragment(['stars' => 4])

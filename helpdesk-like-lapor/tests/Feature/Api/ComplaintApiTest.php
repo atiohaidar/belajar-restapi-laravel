@@ -341,12 +341,22 @@ class ComplaintApiTest extends TestCase
     }
     public function test_admin_can_delete_complaint_with_a_attachment_path(): void
     {
-        $this->markTestSkipped('Ini di pending dulu karena belum ada fitur upload file');
         // Create complaint with attachment to test file deletion too
-        $complaint = Complaint::factory()->has(ComplaintAttachment::factory(), 'attachments')->create();
-        $attachmentPath = $complaint->attachments()->first()->file_path;
-        print_r($attachmentPath);
-        Storage::disk('public')->assertExists($attachmentPath); // Ensure file exists initially
+        $complaint = Complaint::factory()->create();
+        
+        // Create a real attachment with a file that actually exists in storage
+        $filePath = 'uploads/complaints/test_attachment.pdf';
+        Storage::disk('public')->put($filePath, 'Test file content');
+        
+        // Create the attachment record linked to the complaint
+        $attachment = ComplaintAttachment::factory()->create([
+            'complaint_id' => $complaint->id,
+            'file_path' => $filePath,
+            'file_name' => 'test_attachment.pdf'
+        ]);
+        
+        // Verify the file exists
+        Storage::disk('public')->assertExists($filePath);
 
         Sanctum::actingAs($this->admin);
         $response = $this->deleteJson(route('complaints.destroy', $complaint));
@@ -354,7 +364,7 @@ class ComplaintApiTest extends TestCase
 
         $this->assertDatabaseMissing('complaints', ['id' => $complaint->id]);
         $this->assertDatabaseMissing('complaint_attachments', ['complaint_id' => $complaint->id]); // Check cascade
-        Storage::disk('public')->assertMissing($attachmentPath); // Check file deleted from storage
+        Storage::disk('public')->assertMissing($filePath); // Check file deleted from storage
     }
 
     public function test_non_admin_cannot_delete_complaint(): void
