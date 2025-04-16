@@ -1,0 +1,521 @@
+{
+  "info": {
+    "_postman_id": "c6de1e8a-3a54-4b68-89d5-78e2419a5b97",
+    "name": "FAQ Module API",
+    "description": "API documentation for the FAQ Module, including public and protected endpoints for managing frequently asked questions.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public Endpoints",
+      "description": "Endpoints that can be accessed without authentication",
+      "item": [
+        {
+          "name": "Get All FAQs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/faqs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "general",
+                  "description": "Filter FAQs by category (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Returns a list of all published FAQs. If authenticated as admin or manager, also returns unpublished FAQs."
+          },
+          "response": [
+            {
+              "name": "Success Response (Public)",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/faqs"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"question\": \"What is Laravel?\",\n            \"answer\": \"Laravel is a free, open-source PHP web framework intended for web application development.\",\n            \"is_published\": true,\n            \"order\": 1,\n            \"category\": \"general\",\n            \"created_by\": 1,\n            \"created_at\": \"2025-04-16T14:25:32.000000Z\",\n            \"updated_at\": \"2025-04-16T14:25:32.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"question\": \"How to install Laravel?\",\n            \"answer\": \"You can install Laravel using Composer by running: composer create-project laravel/laravel example-app\",\n            \"is_published\": true,\n            \"order\": 2,\n            \"category\": \"installation\",\n            \"created_by\": 1,\n            \"created_at\": \"2025-04-16T14:26:10.000000Z\",\n            \"updated_at\": \"2025-04-16T14:26:10.000000Z\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get FAQ Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/faqs/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs", "categories"]
+            },
+            "description": "Returns a list of all distinct categories from published FAQs. If authenticated as admin or manager, includes categories from unpublished FAQs as well."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/categories"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        \"general\",\n        \"installation\",\n        \"troubleshooting\"\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Single FAQ",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/faqs/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs", "1"]
+            },
+            "description": "Returns details of a specific FAQ by ID. For published FAQs, no authentication is required. For unpublished FAQs, admin or manager authentication is required."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"question\": \"What is Laravel?\",\n        \"answer\": \"Laravel is a free, open-source PHP web framework intended for web application development.\",\n        \"is_published\": true,\n        \"order\": 1,\n        \"category\": \"general\",\n        \"created_by\": 1,\n        \"created_at\": \"2025-04-16T14:25:32.000000Z\",\n        \"updated_at\": \"2025-04-16T14:25:32.000000Z\"\n    }\n}"
+            },
+            {
+              "name": "Error - FAQ Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/999"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"error\",\n    \"message\": \"FAQ not found\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Protected Endpoints",
+      "description": "Endpoints that require authentication via Sanctum",
+      "item": [
+        {
+          "name": "Create New FAQ",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"question\": \"How do I create a Laravel migration?\",\n    \"answer\": \"You can create a migration using the Artisan command: php artisan make:migration create_table_name\",\n    \"is_published\": true,\n    \"category\": \"development\",\n    \"order\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/faqs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs"]
+            },
+            "description": "Creates a new FAQ. Requires admin or manager role."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"question\": \"How do I create a Laravel migration?\",\n    \"answer\": \"You can create a migration using the Artisan command: php artisan make:migration create_table_name\",\n    \"is_published\": true,\n    \"category\": \"development\",\n    \"order\": 3\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/faqs"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"FAQ created successfully\",\n    \"data\": {\n        \"question\": \"How do I create a Laravel migration?\",\n        \"answer\": \"You can create a migration using the Artisan command: php artisan make:migration create_table_name\",\n        \"is_published\": true,\n        \"category\": \"development\",\n        \"order\": 3,\n        \"created_by\": 1,\n        \"updated_at\": \"2025-04-16T14:57:32.000000Z\",\n        \"created_at\": \"2025-04-16T14:57:32.000000Z\",\n        \"id\": 3\n    }\n}"
+            },
+            {
+              "name": "Error - Validation Failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"question\": \"\",\n    \"answer\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/faqs"
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"error\",\n    \"message\": \"Validation failed\",\n    \"errors\": {\n        \"question\": [\n            \"The question field is required.\"\n        ],\n        \"answer\": [\n            \"The answer field is required.\"\n        ]\n    }\n}"
+            },
+            {
+              "name": "Error - Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"question\": \"Will this work?\",\n    \"answer\": \"No, because you're not an admin or manager.\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/faqs"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"This action is unauthorized.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update FAQ",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"question\": \"Updated question?\",\n    \"answer\": \"Updated answer.\",\n    \"is_published\": true,\n    \"category\": \"updated-category\",\n    \"order\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/faqs/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs", "1"]
+            },
+            "description": "Updates an existing FAQ by ID. Requires admin or manager role."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"question\": \"Updated question?\",\n    \"answer\": \"Updated answer.\",\n    \"is_published\": true,\n    \"category\": \"updated-category\",\n    \"order\": 5\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"FAQ updated successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"question\": \"Updated question?\",\n        \"answer\": \"Updated answer.\",\n        \"is_published\": true,\n        \"order\": 5,\n        \"category\": \"updated-category\",\n        \"created_by\": 1,\n        \"created_at\": \"2025-04-16T14:25:32.000000Z\",\n        \"updated_at\": \"2025-04-16T15:02:18.000000Z\"\n    }\n}"
+            },
+            {
+              "name": "Error - FAQ Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"question\": \"Updated question?\",\n    \"answer\": \"Updated answer.\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/999"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"error\",\n    \"message\": \"FAQ not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete FAQ",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/faqs/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs", "1"]
+            },
+            "description": "Deletes an FAQ by ID. Requires admin or manager role."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"FAQ deleted successfully\"\n}"
+            },
+            {
+              "name": "Error - FAQ Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/999"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"error\",\n    \"message\": \"FAQ not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search FAQs",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/faqs.search?q=Laravel&category=general",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs.search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Laravel",
+                  "description": "Search term to find in questions and answers"
+                },
+                {
+                  "key": "category",
+                  "value": "general",
+                  "description": "Optional filter by category"
+                }
+              ]
+            },
+            "description": "Searches FAQs by keyword in both question and answer fields. Requires authentication. Admin and manager users can search through all FAQs, while regular users can only search through published FAQs."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/faqs.search?q=Laravel"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"question\": \"What is Laravel?\",\n            \"answer\": \"Laravel is a free, open-source PHP web framework intended for web application development.\",\n            \"is_published\": true,\n            \"order\": 1,\n            \"category\": \"general\",\n            \"created_by\": 1,\n            \"created_at\": \"2025-04-16T14:25:32.000000Z\",\n            \"updated_at\": \"2025-04-16T14:25:32.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"question\": \"How to install Laravel?\",\n            \"answer\": \"You can install Laravel using Composer by running: composer create-project laravel/laravel example-app\",\n            \"is_published\": true,\n            \"order\": 2,\n            \"category\": \"installation\",\n            \"created_by\": 1,\n            \"created_at\": \"2025-04-16T14:26:10.000000Z\",\n            \"updated_at\": \"2025-04-16T14:26:10.000000Z\"\n        }\n    ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string",
+      "description": "Base URL for the API"
+    },
+    {
+      "key": "auth_token",
+      "value": "YOUR_AUTH_TOKEN_HERE",
+      "type": "string",
+      "description": "Authentication token obtained via login"
+    }
+  ]
+}

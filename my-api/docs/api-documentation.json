@@ -1,0 +1,1630 @@
+{
+  "info": {
+    "_postman_id": "8d5f9e7a-4b62-4a89-9f23-a8e2419a5b97",
+    "name": "Laravel API Documentation",
+    "description": "Complete API documentation for the application, including Authentication, FAQ, and Ticketing modules.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "Endpoints for user authentication and account management",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "register"]
+            },
+            "description": "Register a new user account. Returns a success message upon successful registration."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/register"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"User registered successfully\"\n}"
+            },
+            {
+              "name": "Error - Validation Failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"\",\n    \"email\": \"invalid-email\",\n    \"password\": \"123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/register"
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"The given data was invalid.\",\n    \"errors\": {\n        \"name\": [\"The name field is required.\"],\n        \"email\": [\"The email must be a valid email address.\"],\n        \"password\": [\"The password must be at least 8 characters.\"]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "login"]
+            },
+            "description": "Log in with email and password. Returns an access token upon successful authentication."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/login"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"Login successful\",\n    \"token\": \"1|MK1KZ9lbkRKOu6MHl5Sat0DkcJNRvwp6ToTdni3e\",\n    \"user\": {\n        \"id\": 1,\n        \"name\": \"John Doe\",\n        \"email\": \"john@example.com\",\n        \"created_at\": \"2025-04-15T12:00:00.000000Z\",\n        \"updated_at\": \"2025-04-15T12:00:00.000000Z\"\n    }\n}"
+            },
+            {
+              "name": "Error - Invalid Credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"wrongpassword\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/login"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"Invalid credentials\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "logout"]
+            },
+            "description": "Log out the current user by invalidating their access token."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/logout"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"Logged out successfully\"\n}"
+            },
+            {
+              "name": "Error - Unauthenticated",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/logout"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get User Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/user-details",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user-details"]
+            },
+            "description": "Get details of the currently authenticated user, including their assigned roles."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/user-details"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"id\": 1,\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"created_at\": \"2025-04-15T12:00:00.000000Z\",\n    \"updated_at\": \"2025-04-15T12:00:00.000000Z\",\n    \"roles\": [\n        {\n            \"id\": 2,\n            \"name\": \"user\",\n            \"created_at\": \"2025-04-15T12:00:00.000000Z\",\n            \"updated_at\": \"2025-04-15T12:00:00.000000Z\"\n        }\n    ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FAQ Module",
+      "description": "Endpoints for the FAQ Module, including public and protected endpoints for managing frequently asked questions.",
+      "item": [
+        {
+          "name": "Get All FAQs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/faqs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "general",
+                  "description": "Filter FAQs by category (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Returns a list of all published FAQs. If authenticated as admin or manager, also returns unpublished FAQs."
+          },
+          "response": [
+            {
+              "name": "Success Response (Public)",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/faqs"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"question\": \"What is Laravel?\",\n            \"answer\": \"Laravel is a free, open-source PHP web framework intended for web application development.\",\n            \"is_published\": true,\n            \"order\": 1,\n            \"category\": \"general\",\n            \"created_by\": 1,\n            \"created_at\": \"2025-04-16T14:25:32.000000Z\",\n            \"updated_at\": \"2025-04-16T14:25:32.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"question\": \"How to install Laravel?\",\n            \"answer\": \"You can install Laravel using Composer by running: composer create-project laravel/laravel example-app\",\n            \"is_published\": true,\n            \"order\": 2,\n            \"category\": \"installation\",\n            \"created_by\": 1,\n            \"created_at\": \"2025-04-16T14:26:10.000000Z\",\n            \"updated_at\": \"2025-04-16T14:26:10.000000Z\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get FAQ Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/faqs/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs", "categories"]
+            },
+            "description": "Returns a list of all distinct categories from published FAQs. If authenticated as admin or manager, includes categories from unpublished FAQs as well."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/categories"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        \"general\",\n        \"installation\",\n        \"troubleshooting\"\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Single FAQ",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/faqs/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs", "1"]
+            },
+            "description": "Returns details of a specific FAQ by ID. For published FAQs, no authentication is required. For unpublished FAQs, admin or manager authentication is required."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"question\": \"What is Laravel?\",\n        \"answer\": \"Laravel is a free, open-source PHP web framework intended for web application development.\",\n        \"is_published\": true,\n        \"order\": 1,\n        \"category\": \"general\",\n        \"created_by\": 1,\n        \"created_at\": \"2025-04-16T14:25:32.000000Z\",\n        \"updated_at\": \"2025-04-16T14:25:32.000000Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create New FAQ",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"question\": \"How do I create a Laravel migration?\",\n    \"answer\": \"You can create a migration using the Artisan command: php artisan make:migration create_table_name\",\n    \"is_published\": true,\n    \"category\": \"development\",\n    \"order\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/faqs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs"]
+            },
+            "description": "Creates a new FAQ. Requires admin or manager role."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"question\": \"How do I create a Laravel migration?\",\n    \"answer\": \"You can create a migration using the Artisan command: php artisan make:migration create_table_name\",\n    \"is_published\": true,\n    \"category\": \"development\",\n    \"order\": 3\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/faqs"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"FAQ created successfully\",\n    \"data\": {\n        \"question\": \"How do I create a Laravel migration?\",\n        \"answer\": \"You can create a migration using the Artisan command: php artisan make:migration create_table_name\",\n        \"is_published\": true,\n        \"category\": \"development\",\n        \"order\": 3,\n        \"created_by\": 1,\n        \"updated_at\": \"2025-04-16T14:57:32.000000Z\",\n        \"created_at\": \"2025-04-16T14:57:32.000000Z\",\n        \"id\": 3\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update FAQ",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"question\": \"Updated question?\",\n    \"answer\": \"Updated answer.\",\n    \"is_published\": true,\n    \"category\": \"updated-category\",\n    \"order\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/faqs/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs", "1"]
+            },
+            "description": "Updates an existing FAQ by ID. Requires admin or manager role."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"question\": \"Updated question?\",\n    \"answer\": \"Updated answer.\",\n    \"is_published\": true,\n    \"category\": \"updated-category\",\n    \"order\": 5\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"FAQ updated successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"question\": \"Updated question?\",\n        \"answer\": \"Updated answer.\",\n        \"is_published\": true,\n        \"order\": 5,\n        \"category\": \"updated-category\",\n        \"created_by\": 1,\n        \"created_at\": \"2025-04-16T14:25:32.000000Z\",\n        \"updated_at\": \"2025-04-16T15:02:18.000000Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete FAQ",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/faqs/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs", "1"]
+            },
+            "description": "Deletes an FAQ by ID. Requires admin or manager role."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/api/faqs/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"FAQ deleted successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search FAQs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/faqs.search?q=Laravel&category=general",
+              "host": ["{{base_url}}"],
+              "path": ["api", "faqs.search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Laravel",
+                  "description": "Search term to find in questions and answers"
+                },
+                {
+                  "key": "category",
+                  "value": "general",
+                  "description": "Optional filter by category"
+                }
+              ]
+            },
+            "description": "Searches FAQs by keyword in both question and answer fields. Admin and manager users can search through all FAQs, while regular users can only search through published FAQs."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/faqs.search?q=Laravel"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"question\": \"What is Laravel?\",\n            \"answer\": \"Laravel is a free, open-source PHP web framework intended for web application development.\",\n            \"is_published\": true,\n            \"order\": 1,\n            \"category\": \"general\",\n            \"created_by\": 1,\n            \"created_at\": \"2025-04-16T14:25:32.000000Z\",\n            \"updated_at\": \"2025-04-16T14:25:32.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"question\": \"How to install Laravel?\",\n            \"answer\": \"You can install Laravel using Composer by running: composer create-project laravel/laravel example-app\",\n            \"is_published\": true,\n            \"order\": 2,\n            \"category\": \"installation\",\n            \"created_by\": 1,\n            \"created_at\": \"2025-04-16T14:26:10.000000Z\",\n            \"updated_at\": \"2025-04-16T14:26:10.000000Z\"\n        }\n    ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ticketing Module",
+      "description": "Endpoints for the Ticketing Module, providing support ticket functionality",
+      "item": [
+        {
+          "name": "Get All Tickets",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets"]
+            },
+            "description": "Returns a list of tickets. Admin users can view all tickets, while regular users will only see their own tickets."
+          },
+          "response": [
+            {
+              "name": "Success Response (Admin)",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"title\": \"Can't log in to the system\",\n            \"description\": \"I'm trying to log in but keep getting an error message.\",\n            \"status\": \"open\",\n            \"priority\": \"high\",\n            \"category\": \"login\",\n            \"is_read\": false,\n            \"user_id\": 2,\n            \"assigned_to\": null,\n            \"read_by\": null,\n            \"read_at\": null,\n            \"created_at\": \"2025-04-16T10:25:32.000000Z\",\n            \"updated_at\": \"2025-04-16T10:25:32.000000Z\",\n            \"user\": {\n                \"id\": 2,\n                \"name\": \"Jane Doe\"\n            },\n            \"assignedTo\": null,\n            \"readBy\": null\n        },\n        {\n            \"id\": 2,\n            \"title\": \"Feature request: dark mode\",\n            \"description\": \"Please add a dark mode option to the application.\",\n            \"status\": \"pending\",\n            \"priority\": \"medium\",\n            \"category\": \"feature-request\",\n            \"is_read\": true,\n            \"user_id\": 3,\n            \"assigned_to\": 1,\n            \"read_by\": 1,\n            \"read_at\": \"2025-04-16T11:30:00.000000Z\",\n            \"created_at\": \"2025-04-16T11:25:32.000000Z\",\n            \"updated_at\": \"2025-04-16T11:30:00.000000Z\",\n            \"user\": {\n                \"id\": 3,\n                \"name\": \"Bob Smith\"\n            },\n            \"assignedTo\": {\n                \"id\": 1,\n                \"name\": \"Admin User\"\n            },\n            \"readBy\": {\n                \"id\": 1,\n                \"name\": \"Admin User\"\n            }\n        }\n    ]\n}"
+            },
+            {
+              "name": "Success Response (Regular User)",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"title\": \"Can't log in to the system\",\n            \"description\": \"I'm trying to log in but keep getting an error message.\",\n            \"status\": \"open\",\n            \"priority\": \"high\",\n            \"category\": \"login\",\n            \"is_read\": false,\n            \"user_id\": 2,\n            \"assigned_to\": null,\n            \"read_by\": null,\n            \"read_at\": null,\n            \"created_at\": \"2025-04-16T10:25:32.000000Z\",\n            \"updated_at\": \"2025-04-16T10:25:32.000000Z\",\n            \"user\": {\n                \"id\": 2,\n                \"name\": \"Jane Doe\"\n            },\n            \"assignedTo\": null,\n            \"readBy\": null\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Ticket",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Cannot access dashboard\",\n    \"description\": \"When trying to access the dashboard, I get a 404 error.\",\n    \"priority\": \"high\",\n    \"category\": \"access-issue\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets"]
+            },
+            "description": "Create a new support ticket. Any authenticated user can create tickets."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"title\": \"Cannot access dashboard\",\n    \"description\": \"When trying to access the dashboard, I get a 404 error.\",\n    \"priority\": \"high\",\n    \"category\": \"access-issue\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/tickets"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"Ticket created successfully\",\n    \"data\": {\n        \"title\": \"Cannot access dashboard\",\n        \"description\": \"When trying to access the dashboard, I get a 404 error.\",\n        \"priority\": \"high\",\n        \"category\": \"access-issue\",\n        \"user_id\": 2,\n        \"status\": \"open\",\n        \"updated_at\": \"2025-04-16T16:45:23.000000Z\",\n        \"created_at\": \"2025-04-16T16:45:23.000000Z\",\n        \"id\": 3\n    }\n}"
+            },
+            {
+              "name": "Error - Validation Failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"title\": \"\",\n    \"description\": \"\",\n    \"priority\": \"invalid-priority\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/tickets"
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"error\",\n    \"message\": \"Validation failed\",\n    \"errors\": {\n        \"title\": [\n            \"The title field is required.\"\n        ],\n        \"description\": [\n            \"The description field is required.\"\n        ],\n        \"priority\": [\n            \"The selected priority is invalid.\"\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Ticket Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1"]
+            },
+            "description": "Get detailed information about a specific ticket. Users can only view their own tickets, while admins can view any ticket."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Can't log in to the system\",\n        \"description\": \"I'm trying to log in but keep getting an error message.\",\n        \"status\": \"open\",\n        \"priority\": \"high\",\n        \"category\": \"login\",\n        \"is_read\": true,\n        \"user_id\": 2,\n        \"assigned_to\": null,\n        \"read_by\": 1,\n        \"read_at\": \"2025-04-16T17:00:00.000000Z\",\n        \"created_at\": \"2025-04-16T10:25:32.000000Z\",\n        \"updated_at\": \"2025-04-16T17:00:00.000000Z\",\n        \"user\": {\n            \"id\": 2,\n            \"name\": \"Jane Doe\"\n        },\n        \"assignedTo\": null,\n        \"readBy\": {\n            \"id\": 1,\n            \"name\": \"Admin User\"\n        },\n        \"comments\": [\n            {\n                \"id\": 1,\n                \"ticket_id\": 1,\n                \"user_id\": 2,\n                \"comment\": \"I've tried clearing my browser cache but it didn't help.\",\n                \"is_private\": false,\n                \"created_at\": \"2025-04-16T11:00:00.000000Z\",\n                \"updated_at\": \"2025-04-16T11:00:00.000000Z\",\n                \"user\": {\n                    \"id\": 2,\n                    \"name\": \"Jane Doe\"\n                }\n            }\n        ],\n        \"attachments\": [\n            {\n                \"id\": 1,\n                \"ticket_id\": 1,\n                \"user_id\": 2,\n                \"filename\": \"2d7e9a31-97b1-4c33-bf4a-4de266c67594.png\",\n                \"original_filename\": \"error_screenshot.png\",\n                \"file_path\": \"ticket-attachments/1/2d7e9a31-97b1-4c33-bf4a-4de266c67594.png\",\n                \"file_type\": \"image/png\",\n                \"file_size\": 45678,\n                \"is_public\": true,\n                \"created_at\": \"2025-04-16T11:30:00.000000Z\",\n                \"updated_at\": \"2025-04-16T11:30:00.000000Z\"\n            }\n        ]\n    }\n}"
+            },
+            {
+              "name": "Error - Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/999"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"error\",\n    \"message\": \"Ticket not found\"\n}"
+            },
+            {
+              "name": "Error - Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/2"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"This action is unauthorized.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Ticket",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Updated: Cannot access dashboard\",\n    \"description\": \"When trying to access the dashboard, I get a 404 error. Additional information: I'm using Chrome browser.\",\n    \"status\": \"pending\",\n    \"priority\": \"medium\",\n    \"category\": \"access-issue\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1"]
+            },
+            "description": "Update an existing ticket. Users can only update their own tickets, and only if they're not closed. Admins can update any ticket."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"title\": \"Updated: Cannot access dashboard\",\n    \"description\": \"When trying to access the dashboard, I get a 404 error. Additional information: I'm using Chrome browser.\",\n    \"status\": \"pending\",\n    \"priority\": \"medium\",\n    \"category\": \"access-issue\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"Ticket updated successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Updated: Cannot access dashboard\",\n        \"description\": \"When trying to access the dashboard, I get a 404 error. Additional information: I'm using Chrome browser.\",\n        \"status\": \"pending\",\n        \"priority\": \"medium\",\n        \"category\": \"access-issue\",\n        \"is_read\": true,\n        \"user_id\": 2,\n        \"assigned_to\": null,\n        \"read_by\": 1,\n        \"read_at\": \"2025-04-16T17:00:00.000000Z\",\n        \"created_at\": \"2025-04-16T10:25:32.000000Z\",\n        \"updated_at\": \"2025-04-16T17:15:45.000000Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Ticket",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1"]
+            },
+            "description": "Delete a ticket. Only admins can delete tickets."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"Ticket deleted successfully\"\n}"
+            },
+            {
+              "name": "Error - Unauthorized",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"This action is unauthorized.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mark Ticket as Read",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1/mark-read",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1", "mark-read"]
+            },
+            "description": "Mark a ticket as read. Only admins can manually mark tickets as read/unread."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/mark-read"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"Ticket marked as read\",\n    \"data\": {\n        \"id\": 1,\n        \"is_read\": true,\n        \"read_by\": 1,\n        \"read_at\": \"2025-04-16T18:30:00.000000Z\",\n        \"updated_at\": \"2025-04-16T18:30:00.000000Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mark Ticket as Unread",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1/mark-unread",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1", "mark-unread"]
+            },
+            "description": "Mark a ticket as unread. Only admins can manually mark tickets as read/unread."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "PUT",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/mark-unread"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"Ticket marked as unread\",\n    \"data\": {\n        \"id\": 1,\n        \"is_read\": false,\n        \"read_by\": null,\n        \"read_at\": null,\n        \"updated_at\": \"2025-04-16T18:35:00.000000Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Unread Tickets Count",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/unread/count",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "unread", "count"]
+            },
+            "description": "Get the count of unread tickets. Only admins can access this endpoint."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/unread/count"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"count\": 5\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Ticket Comments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1/comments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1", "comments"]
+            },
+            "description": "Get all comments for a specific ticket. Users can only view comments on their own tickets, while admins can view comments on any ticket."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/comments"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"ticket_id\": 1,\n            \"user_id\": 2,\n            \"comment\": \"I've tried clearing my browser cache but it didn't help.\",\n            \"is_private\": false,\n            \"created_at\": \"2025-04-16T11:00:00.000000Z\",\n            \"updated_at\": \"2025-04-16T11:00:00.000000Z\",\n            \"user\": {\n                \"id\": 2,\n                \"name\": \"Jane Doe\"\n            }\n        },\n        {\n            \"id\": 2,\n            \"ticket_id\": 1,\n            \"user_id\": 1,\n            \"comment\": \"Have you tried using a different browser?\",\n            \"is_private\": false,\n            \"created_at\": \"2025-04-16T12:00:00.000000Z\",\n            \"updated_at\": \"2025-04-16T12:00:00.000000Z\",\n            \"user\": {\n                \"id\": 1,\n                \"name\": \"Admin User\"\n            }\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add Comment to Ticket",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"comment\": \"I've checked with Firefox and the issue persists.\",\n    \"is_private\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1/comments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1", "comments"]
+            },
+            "description": "Add a new comment to a ticket. Users can only add comments to their own tickets. Only admins can add private comments."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"comment\": \"I've checked with Firefox and the issue persists.\",\n    \"is_private\": false\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/comments"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"Comment added successfully\",\n    \"data\": {\n        \"ticket_id\": 1,\n        \"user_id\": 2,\n        \"comment\": \"I've checked with Firefox and the issue persists.\",\n        \"is_private\": false,\n        \"updated_at\": \"2025-04-16T19:00:00.000000Z\",\n        \"created_at\": \"2025-04-16T19:00:00.000000Z\",\n        \"id\": 3,\n        \"user\": {\n            \"id\": 2,\n            \"name\": \"Jane Doe\"\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Upload Attachment to Ticket",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/path/to/your/document.pdf",
+                  "description": "File to upload (max 10MB)"
+                },
+                {
+                  "key": "is_public",
+                  "value": "true",
+                  "description": "Whether the attachment should be visible to all users",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1/attachments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1", "attachments"]
+            },
+            "description": "Upload a file attachment to a specific ticket. The user must be the owner of the ticket or an admin."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": "/path/to/your/document.pdf"
+                    },
+                    {
+                      "key": "is_public",
+                      "value": "true",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/attachments"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"Attachment uploaded successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"ticket_id\": 1,\n        \"user_id\": 2,\n        \"filename\": \"2d7e9a31-97b1-4c33-bf4a-4de266c67594.pdf\",\n        \"original_filename\": \"document.pdf\",\n        \"file_path\": \"ticket-attachments/1/2d7e9a31-97b1-4c33-bf4a-4de266c67594.pdf\",\n        \"file_type\": \"application/pdf\",\n        \"file_size\": 1024000,\n        \"is_public\": true,\n        \"created_at\": \"2025-04-16T14:30:00.000000Z\",\n        \"updated_at\": \"2025-04-16T14:30:00.000000Z\"\n    }\n}"
+            },
+            {
+              "name": "Error - File Too Large",
+              "originalRequest": {
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": "/path/to/your/large_document.pdf"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/attachments"
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"error\",\n    \"message\": \"Validation failed\",\n    \"errors\": {\n        \"file\": [\n            \"The file must not be greater than 10240 kilobytes.\"\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Attachments for a Ticket",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1/attachments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1", "attachments"]
+            },
+            "description": "List all attachments for a specific ticket. Regular users can only see public attachments and their own private attachments. Admins can see all attachments."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/attachments"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"ticket_id\": 1,\n            \"user_id\": 2,\n            \"filename\": \"2d7e9a31-97b1-4c33-bf4a-4de266c67594.pdf\",\n            \"original_filename\": \"document.pdf\",\n            \"file_path\": \"ticket-attachments/1/2d7e9a31-97b1-4c33-bf4a-4de266c67594.pdf\",\n            \"file_type\": \"application/pdf\",\n            \"file_size\": 1024000,\n            \"is_public\": true,\n            \"created_at\": \"2025-04-16T14:30:00.000000Z\",\n            \"updated_at\": \"2025-04-16T14:30:00.000000Z\",\n            \"user\": {\n                \"id\": 2,\n                \"name\": \"Jane Doe\"\n            }\n        },\n        {\n            \"id\": 2,\n            \"ticket_id\": 1,\n            \"user_id\": 2,\n            \"filename\": \"5a8e9b42-87c1-4d23-cf5a-3df266d78593.txt\",\n            \"original_filename\": \"notes.txt\",\n            \"file_path\": \"ticket-attachments/1/5a8e9b42-87c1-4d23-cf5a-3df266d78593.txt\",\n            \"file_type\": \"text/plain\",\n            \"file_size\": 1520,\n            \"is_public\": true,\n            \"created_at\": \"2025-04-16T15:30:00.000000Z\",\n            \"updated_at\": \"2025-04-16T15:30:00.000000Z\",\n            \"user\": {\n                \"id\": 2,\n                \"name\": \"Jane Doe\"\n            }\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "View Specific Attachment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1/attachments/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1", "attachments", "1"]
+            },
+            "description": "View details of a specific attachment. Users can only view public attachments or their own private attachments."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/attachments/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"ticket_id\": 1,\n        \"user_id\": 2,\n        \"filename\": \"2d7e9a31-97b1-4c33-bf4a-4de266c67594.pdf\",\n        \"original_filename\": \"document.pdf\",\n        \"file_path\": \"ticket-attachments/1/2d7e9a31-97b1-4c33-bf4a-4de266c67594.pdf\",\n        \"file_type\": \"application/pdf\",\n        \"file_size\": 1024000,\n        \"is_public\": true,\n        \"created_at\": \"2025-04-16T14:30:00.000000Z\",\n        \"updated_at\": \"2025-04-16T14:30:00.000000Z\",\n        \"user\": {\n            \"id\": 2,\n            \"name\": \"Jane Doe\"\n        }\n    }\n}"
+            },
+            {
+              "name": "Error - Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/attachments/999"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"error\",\n    \"message\": \"Attachment not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Download Attachment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1/attachments/1/download",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1", "attachments", "1", "download"]
+            },
+            "description": "Download a specific attachment file. Users can only download public attachments or their own private attachments."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/attachments/1/download"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/pdf"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"document.pdf\""
+                }
+              ],
+              "body": "Binary file content not shown in Postman collection"
+            },
+            {
+              "name": "Error - Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/attachments/999/download"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"error\",\n    \"message\": \"Attachment not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Attachment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tickets/1/attachments/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tickets", "1", "attachments", "1"]
+            },
+            "description": "Delete a specific attachment. Users can only delete their own attachments. Admins can delete any attachment."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/attachments/1"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"success\",\n    \"message\": \"Attachment deleted successfully\"\n}"
+            },
+            {
+              "name": "Error - Unauthorized",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{base_url}}/api/tickets/1/attachments/2"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"This action is unauthorized.\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string",
+      "description": "Base URL for the API"
+    },
+    {
+      "key": "auth_token",
+      "value": "YOUR_AUTH_TOKEN_HERE",
+      "type": "string",
+      "description": "Authentication token obtained via login"
+    }
+  ]
+}

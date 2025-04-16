@@ -7,7 +7,7 @@ use App\Http\Controllers\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sactum');
+})->middleware('auth:sanctum');
 
 Route::get('products', 'ProductController@index');
 
